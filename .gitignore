@@ -1,0 +1,10 @@
+__pycache__/
+database/
+env/
+htmlcov/
+.coverage
+.idea/
+.pytest_cache/
+.env
+postman/
+*.sqlite

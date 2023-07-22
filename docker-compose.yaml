@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+
+  db:
+    container_name: restaurant_db
+    image: postgres:15-alpine
+    ports:
+      - "15432:5432"
+    env_file:
+      - .env
+    volumes:
+      - ./database/postgres:/var/lib/postgresql/data
+
+  api:
+    container_name: restaurant_api
+    image: restaurant
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - db
