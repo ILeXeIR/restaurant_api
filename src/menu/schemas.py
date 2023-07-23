@@ -1,13 +1,19 @@
 from pydantic import BaseModel
-
+from typing import Optional
+from uuid import UUID
 
 class DishBase(BaseModel):
     title: str
+    description: str
     price: int
 
 
+class DishCreate(DishBase):
+    pass
+
+
 class Dish(DishBase):
-    id: int
+    id: UUID
     submenu_id: int
 
     class Config:
@@ -16,10 +22,15 @@ class Dish(DishBase):
 
 class SubmenuBase(BaseModel):
     title: str
+    description: str
+
+
+class SubmenuCreate(SubmenuBase):
+    pass
 
 
 class Submenu(SubmenuBase):
-    id: int
+    id: UUID
     main_menu_id: int
     dishes: list[Dish] = []
 
@@ -29,13 +40,14 @@ class Submenu(SubmenuBase):
 
 class MenuBase(BaseModel):
     title: str
+    description: str
 
 
 class MenuCreate(MenuBase):
     pass
 
 class Menu(MenuBase):
-    id: int
+    id: str
     submenus: list[Submenu] = []
 
     class Config:
