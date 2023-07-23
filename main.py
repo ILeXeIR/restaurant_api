@@ -1,15 +1,23 @@
 from fastapi import FastAPI
 import uvicorn
 
-from src.database import engine
-from src.menu import models
+from src.database import database, engine, metadata
 from src.menu.api import menu_router
 
-
-models.Base.metadata.create_all(bind=engine)
-
+metadata.create_all(engine)
 app = FastAPI(title="Restaurant API")
 app.include_router(menu_router, prefix="/menu", tags=["menu"])
+
+
+@app.on_event("startup")
+async def startup():
+    await database.connect()
+
+
+@app.on_event("shutdown")
+async def shutdown():
+    await database.disconnect()
+
 
 @app.get("/")
 async def read_root():
