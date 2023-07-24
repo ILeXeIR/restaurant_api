@@ -5,7 +5,7 @@ from uuid import UUID
 class DishBase(BaseModel):
     title: str
     description: str
-    price: int
+    price: float
 
 
 class DishCreate(DishBase):
@@ -13,8 +13,9 @@ class DishCreate(DishBase):
 
 
 class Dish(DishBase):
-    id: UUID
-    submenu_id: int
+    id: str
+    submenu_id: str
+    price: str
 
     class Config:
         from_attributes = True
@@ -30,12 +31,15 @@ class SubmenuCreate(SubmenuBase):
 
 
 class Submenu(SubmenuBase):
-    id: UUID
-    main_menu_id: int
-    dishes: list[Dish] = []
+    id: str
+    menu_id: str
 
     class Config:
         from_attributes = True
+
+
+class SubmenuExtra(Submenu):
+    dishes: int = 0
 
 
 class MenuBase(BaseModel):
@@ -46,9 +50,14 @@ class MenuBase(BaseModel):
 class MenuCreate(MenuBase):
     pass
 
+
 class Menu(MenuBase):
     id: str
-    submenus: list[Submenu] = []
 
     class Config:
         from_attributes = True
+
+
+class MenuExtra(Menu):
+    submenus: int = 0
+    dishes: int = 0
