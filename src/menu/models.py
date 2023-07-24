@@ -20,7 +20,7 @@ submenus = Table(
     Column("id", String, primary_key=True),
     Column("title", String),
     Column("description", String),
-    Column("menu_id", String, ForeignKey("menus.id", ondelete='CASCADE'))
+    Column("menu_id", String, ForeignKey("menus.id", ondelete="CASCADE"))
 )
 
 dishes = Table(
@@ -30,5 +30,5 @@ dishes = Table(
     Column("title", String),
     Column("description", String),
     Column("price", String),
-    Column("submenu_id", String, ForeignKey("submenus.id", ondelete='CASCADE'))
+    Column("submenu_id", String, ForeignKey("submenus.id", ondelete="CASCADE"))
 )

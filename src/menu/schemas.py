@@ -39,7 +39,7 @@ class Submenu(SubmenuBase):
 
 
 class SubmenuExtra(Submenu):
-    dishes: int = 0
+    dishes_count: int = 0
 
 
 class MenuBase(BaseModel):
@@ -59,5 +59,5 @@ class Menu(MenuBase):
 
 
 class MenuExtra(Menu):
-    submenus: int = 0
-    dishes: int = 0
+    submenus_count: int = 0
+    dishes_count: int = 0
