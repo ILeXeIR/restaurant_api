@@ -4,13 +4,13 @@ import uvicorn
 from src.database import database, engine, metadata
 from src.menu.api import menu_router
 
-metadata.create_all(engine)
 app = FastAPI(title="Restaurant API")
 app.include_router(menu_router, prefix="/api/v1/menus", tags=["menu"])
 
 
 @app.on_event("startup")
 async def startup():
+    metadata.create_all(engine)
     await database.connect()
 
 

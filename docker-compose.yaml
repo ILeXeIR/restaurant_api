@@ -6,7 +6,7 @@ services:
     container_name: restaurant_db
     image: postgres:15-alpine
     ports:
-      - "15432:5432"
+      - "5432:5432"
     env_file:
       - .env
     volumes:

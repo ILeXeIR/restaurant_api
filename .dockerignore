@@ -6,9 +6,8 @@ __pycache__/
 .idea/
 .pytest_cache/
 database/
-Dockerfile
-docker-compose.yaml
+Dockerfile*
+docker-compose*
 env/
 htmlcov/
-testcases/
 postman/

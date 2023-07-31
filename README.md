@@ -20,6 +20,5 @@ It has default value 5432.
   (https://docs.docker.com/compose/install/)
 - Run all containers with ```docker-compose up -d```
 
-
-
-
+**4.** You can start all tests with command:
+```docker-compose -f docker-compose-test.yaml up -d```

@@ -30,7 +30,7 @@ async def get_menu(menu_id: str):
     values = dict(db_menu)
     values["submenus_count"] = result["submenus_count"]
     values["dishes_count"] = result["dishes_count"]
-    return MenuExtra.parse_obj(values)
+    return MenuExtra.model_validate(values)
 
 
 @menu_router.get("/", response_model=List[Menu])
@@ -41,11 +41,11 @@ async def get_menus(skip: int = 0, limit: int = 100):
 
 @menu_router.post("/", status_code=201, response_model=Menu)
 async def create_menu(menu: MenuCreate):
-    values = menu.dict()
+    values = menu.model_dump()
     values["id"] = str(uuid.uuid4())
     query = menus.insert().values(**values)
     await database.execute(query)
-    return Menu.parse_obj({**values})
+    return Menu.model_validate({**values})
 
 
 @menu_router.get("/all/submenus", response_model=List[Submenu])
@@ -68,7 +68,7 @@ async def update_menu(menu_id: str, menu: MenuCreate):
         raise HTTPException(status_code=404, detail="menu not found")
     query = menus.update().where(menus.c.id == db_menu.id).values(**menu.dict())
     await database.execute(query=query)
-    return Menu.parse_obj({**menu.dict(), "id": db_menu.id})
+    return Menu.model_validate({**menu.dict(), "id": db_menu.id})
 
 
 @menu_router.delete("/{menu_id}")
@@ -93,7 +93,7 @@ async def get_submenu(menu_id: str, submenu_id: str):
     query = select([func.count()]).select_from(dishes).where(
         dishes.c.submenu_id == submenu_id)
     dishes_count = await database.fetch_val(query)
-    return SubmenuExtra.parse_obj({**db_submenu, "dishes_count": dishes_count})
+    return SubmenuExtra.model_validate({**db_submenu, "dishes_count": dishes_count})
 
 
 @menu_router.get("/{menu_id}/submenus", response_model=List[Submenu])
@@ -109,12 +109,12 @@ async def get_submenus(menu_id: str):
 @menu_router.post("/{menu_id}/submenus", status_code=201,
                   response_model=Submenu)
 async def create_submenu(submenu: SubmenuCreate, menu_id: str):
-    values = submenu.dict()
+    values = submenu.model_dump()
     values["id"] = str(uuid.uuid4())
     values["menu_id"] = menu_id
     query = submenus.insert().values(**values)
     await database.execute(query)
-    return Submenu.parse_obj({**values})
+    return Submenu.model_validate({**values})
 
 
 @menu_router.patch("/{menu_id}/submenus/{submenu_id}", response_model=Submenu)
@@ -125,10 +125,10 @@ async def update_submenu(menu_id: str, submenu_id: str, submenu: SubmenuCreate):
     if db_submenu is None:
         raise HTTPException(status_code=404, detail="submenu not found")
     query = submenus.update().where(submenus.c.id == db_submenu.id).values(
-        **submenu.dict())
+        **submenu.model_dump())
     await database.execute(query=query)
-    result = {**submenu.dict(), "id": submenu_id, "menu_id": menu_id}
-    return Submenu.parse_obj(result)
+    result = {**submenu.model_dump(), "id": submenu_id, "menu_id": menu_id}
+    return Submenu.model_validate(result)
 
 
 @menu_router.delete("/{menu_id}/submenus/{submenu_id}")
@@ -156,7 +156,7 @@ async def get_dish(menu_id: str, submenu_id: str, dish_id: str):
     db_submenu = await database.fetch_one(query)
     if db_submenu is None:
         raise HTTPException(status_code=404, detail="submenu not found")
-    return Dish.parse_obj(db_dish)
+    return Dish.model_validate(db_dish)
 
 
 @menu_router.get("/{menu_id}/submenus/{submenu_id}/dishes",
@@ -180,13 +180,13 @@ async def create_dish(dish: DishCreate, menu_id: str, submenu_id: str):
     db_submenu = await database.fetch_one(query)
     if db_submenu is None:
         raise HTTPException(status_code=404, detail="submenu not found")
-    values = dish.dict()
+    values = dish.model_dump()
     values["price"] = "{:.2f}".format(dish.price)
     values["id"] = str(uuid.uuid4())
     values["submenu_id"] = submenu_id
     query = dishes.insert().values(**values)
     await database.execute(query)
-    return Dish.parse_obj({**values})
+    return Dish.model_validate({**values})
 
 
 @menu_router.patch("/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}",
@@ -203,13 +203,13 @@ async def update_dish(menu_id: str, submenu_id: str, dish_id: str,
     db_submenu = await database.fetch_one(query)
     if db_submenu is None:
         raise HTTPException(status_code=404, detail="submenu not found")
-    values = dish.dict()
+    values = dish.model_dump()
     values["price"] = "{:.2f}".format(dish.price)
     query = dishes.update().where(dishes.c.id == db_dish.id).values(values)
     await database.execute(query=query)
     values["id"] = dish_id
     values["submenu_id"] = submenu_id
-    return Dish.parse_obj(values)
+    return Dish.model_validate(values)
 
 
 @menu_router.delete("/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}")
